@@ -51,6 +51,14 @@ class TodoList extends Component {
     });
   };
 
+  removeTodo = id => {
+    const { todos } = this.state;
+
+    this.setState({
+      todos: todos.filter(todo => id !== todo.id),
+    });
+  };
+
   unCompletedTodos = () => {
     const { todos } = this.state;
 
@@ -90,7 +98,10 @@ class TodoList extends Component {
         >
           {todo.content}
         </label>
-        <i className="remove-todo far fa-times-circle"></i>
+        <i
+          onClick={() => this.removeTodo(todo.id)}
+          className="remove-todo far fa-times-circle"
+        ></i>
       </li>
     ));
   };
