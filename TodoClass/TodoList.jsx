@@ -17,6 +17,7 @@ class TodoList extends Component {
   };
 
   inputRef = createRef();
+  checkRef = createRef();
 
   componentDidMount() {
     this.inputRef.current.focus();
@@ -59,10 +60,34 @@ class TodoList extends Component {
     });
   };
 
+  completedTodos = () => {
+    const { todos } = this.state;
+
+    return todos.filter(({ completed }) => completed === true).length;
+  };
+
   unCompletedTodos = () => {
     const { todos } = this.state;
 
     return todos.filter(({ completed }) => completed === false).length;
+  };
+
+  completeAllTodos = () => {
+    const { todos } = this.state;
+
+    this.setState({
+      todos: todos.map(todo => {
+        return { ...todo, completed: !this.checkRef.current.checked };
+      }),
+    });
+  };
+
+  removeCompletedTodos = () => {
+    const { todos } = this.state;
+
+    this.setState({
+      todos: todos.filter(({ completed }) => !completed),
+    });
   };
 
   activeNav = active => {
@@ -139,7 +164,7 @@ class TodoList extends Component {
             <li
               id="completed"
               onClick={() => this.activeNav('completed')}
-              className={state === 'active' ? 'completed' : null}
+              className={state === 'completed' ? 'active' : null}
             >
               Completed
             </li>
@@ -151,14 +176,19 @@ class TodoList extends Component {
             <div className="complete-all">
               <input
                 className="custom-checkbox"
+                ref={this.checkRef}
                 type="checkbox"
                 id="ck-complete-all"
               />
-              <label htmlFor="ck-complete-all">Mark all as complete</label>
+              <label htmlFor="ck-complete-all" onClick={this.completeAllTodos}>
+                Mark all as complete
+              </label>
             </div>
             <div className="clear-completed">
-              <button className="btn">
-                Clear completed (<span className="completed-todos">0</span>)
+              <button className="btn" onClick={this.removeCompletedTodos}>
+                Clear completed (
+                <span className="completed-todos">{this.completedTodos()}</span>
+                )
               </button>
               <strong className="active-todos">
                 {this.unCompletedTodos()}
